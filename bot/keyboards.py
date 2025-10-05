@@ -167,3 +167,24 @@ def get_confirmation_keyboard(action: str, item_id: int = None) -> InlineKeyboar
     
     builder.adjust(2)
     return builder.as_markup()
+
+
+def get_results_keyboard() -> InlineKeyboardMarkup:
+    """Клавиатура для результатов парсинга"""
+    builder = InlineKeyboardBuilder()
+    
+    builder.add(InlineKeyboardButton(
+        text="📁 Экспорт CSV",
+        callback_data="export_csv"
+    ))
+    builder.add(InlineKeyboardButton(
+        text="🔍 Проверить вручную",
+        callback_data="manual_check"
+    ))
+    builder.add(InlineKeyboardButton(
+        text="🔙 Назад",
+        callback_data="back_to_main"
+    ))
+    
+    builder.adjust(1)
+    return builder.as_markup()

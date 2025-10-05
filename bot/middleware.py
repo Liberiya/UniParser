@@ -7,7 +7,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from loguru import logger
 
-from database.operations import get_or_create_user
+# from database.operations import get_or_create_user  # Удалено
 
 
 class UserMiddleware:
@@ -24,16 +24,8 @@ class UserMiddleware:
             user = event.from_user
         
         if user:
-            # Создаем или получаем пользователя в базе данных
-            db_user = get_or_create_user(
-                telegram_id=user.id,
-                username=user.username,
-                first_name=user.first_name,
-                last_name=user.last_name
-            )
-            
-            # Добавляем пользователя в данные
-            data['db_user'] = db_user
+            # Просто добавляем пользователя в данные (без БД)
+            data['user'] = user
             
             logger.debug(f"Обработка сообщения от пользователя {user.id}")
         

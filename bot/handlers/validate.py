@@ -7,7 +7,7 @@ from aiogram.fsm.context import FSMContext
 from loguru import logger
 
 from bot.states import ValidationStates
-from database.operations import validate_staff_record, get_staff_records
+# from database.operations import validate_staff_record, get_staff_records  # Удалено
 
 
 async def validate_handler(message: Message, state: FSMContext):
@@ -114,81 +114,17 @@ def validate_manual_data(fio: str, email: str, position: str, url: str) -> dict:
 
 async def validate_correct_callback(callback_query: CallbackQuery, state: FSMContext):
     """Обработчик кнопки 'Корректно'"""
-    try:
-        record_id = int(callback_query.data.split('_')[-1])
-        user_id = callback_query.from_user.id
-        
-        # Обновляем запись в базе данных
-        success = validate_staff_record(record_id, True, user_id)
-        
-        if success:
-            await callback_query.answer("✅ Запись отмечена как корректная", show_alert=True)
-        else:
-            await callback_query.answer("❌ Ошибка при обновлении записи", show_alert=True)
-            
-    except Exception as e:
-        logger.error(f"Ошибка при валидации записи: {e}")
-        await callback_query.answer("❌ Произошла ошибка", show_alert=True)
+    await callback_query.answer("Валидация временно недоступна (без БД)", show_alert=True)
 
 
 async def validate_incorrect_callback(callback_query: CallbackQuery, state: FSMContext):
     """Обработчик кнопки 'Неверно'"""
-    try:
-        record_id = int(callback_query.data.split('_')[-1])
-        user_id = callback_query.from_user.id
-        
-        # Обновляем запись в базе данных
-        success = validate_staff_record(record_id, False, user_id)
-        
-        if success:
-            await callback_query.answer("❌ Запись отмечена как неверная", show_alert=True)
-        else:
-            await callback_query.answer("❌ Ошибка при обновлении записи", show_alert=True)
-            
-    except Exception as e:
-        logger.error(f"Ошибка при валидации записи: {e}")
-        await callback_query.answer("❌ Произошла ошибка", show_alert=True)
+    await callback_query.answer("Валидация временно недоступна (без БД)", show_alert=True)
 
 
 async def manual_check_handler(callback_query: CallbackQuery, state: FSMContext):
     """Обработчик кнопки 'Проверить вручную'"""
-    try:
-        parsing_result_id = int(callback_query.data.split('_')[-1])
-        
-        # Получаем записи для проверки
-        records = get_staff_records(parsing_result_id)
-        
-        if not records:
-            await callback_query.answer("Нет записей для проверки", show_alert=True)
-            return
-        
-        # Показываем записи с низкой достоверностью
-        low_confidence_records = [r for r in records if r['confidence'] < 0.7]
-        
-        if not low_confidence_records:
-            await callback_query.answer("Все записи имеют высокую достоверность", show_alert=True)
-            return
-        
-        # Показываем первую запись для проверки
-        record = low_confidence_records[0]
-        
-        text = f"🔍 <b>Проверка записи #{record['id']}</b>\n\n"
-        text += f"<b>ФИО:</b> {record['fio']}\n"
-        text += f"<b>Должность:</b> {record['position'] or 'Не указана'}\n"
-        text += f"<b>Email:</b> {record['email'] or 'Не указан'}\n"
-        text += f"<b>Достоверность:</b> {record['confidence']:.2f}\n"
-        text += f"<b>Источник:</b> {record['source_url'][:50]}...\n\n"
-        text += "Проверьте корректность данных:"
-        
-        await callback_query.message.edit_text(
-            text,
-            reply_markup=get_validation_keyboard(record['id']),
-            parse_mode="HTML"
-        )
-        
-    except Exception as e:
-        logger.error(f"Ошибка при показе записи для проверки: {e}")
-        await callback_query.answer("❌ Произошла ошибка", show_alert=True)
+    await callback_query.answer("Валидация временно недоступна (без БД)", show_alert=True)
 
 
 def get_validation_keyboard(record_id: int):

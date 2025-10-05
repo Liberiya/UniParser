@@ -10,9 +10,9 @@ playwright==1.40.0
 selenium==4.15.2
 
 # Database
-sqlalchemy==2.0.23
-alembic==1.12.1
-sqlite3
+# sqlalchemy==2.0.23  # Удалено
+# alembic==1.12.1    # Удалено
+# sqlite3             # Удалено
 
 # Data processing
 pandas==2.1.3

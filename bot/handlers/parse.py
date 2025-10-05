@@ -11,7 +11,7 @@ import re
 from bot.states import ParseStates
 from bot.keyboards import get_parse_keyboard, get_staff_item_keyboard, get_confirmation_keyboard
 from parser.main import UniversityParser
-from database.operations import save_parsing_result, get_user_settings
+# from database.operations import save_parsing_result, get_user_settings  # Удалено
 
 
 async def parse_handler(message: Message, state: FSMContext):
@@ -76,8 +76,15 @@ async def start_parsing(message: Message, state: FSMContext, url: str):
     """Запуск процесса парсинга"""
     user = message.from_user
     
-    # Получаем настройки пользователя
-    settings = await get_user_settings(user.id)
+    # Настройки по умолчанию (без БД)
+    settings = {
+        'rate_limit_delay': 2.0,
+        'max_depth': 2,
+        'js_render_timeout': 30,
+        'parsing_timeout': 120,
+        'confidence_threshold': 0.6,
+        'js_render_enabled': True
+    }
     
     # Отправляем сообщение о начале парсинга
     parsing_msg = await message.answer(
@@ -103,16 +110,8 @@ async def start_parsing(message: Message, state: FSMContext, url: str):
         # Запускаем парсинг
         results = await parser.parse_url(url)
         
-        # Сохраняем результаты
-        parsing_id = await save_parsing_result(
-            user_id=user.id,
-            url=url,
-            results=results,
-            settings=settings
-        )
-        
-        # Обновляем сообщение с результатами
-        await show_parsing_results(parsing_msg, results, parsing_id)
+        # Просто показываем результаты (без сохранения в БД)
+        await show_parsing_results(parsing_msg, results)
         
     except Exception as e:
         logger.error(f"Ошибка парсинга для пользователя {user.id}: {e}")
@@ -128,7 +127,7 @@ async def start_parsing(message: Message, state: FSMContext, url: str):
         await state.clear()
 
 
-async def show_parsing_results(message: Message, results: list, parsing_id: int):
+async def show_parsing_results(message: Message, results: list):
     """Показ результатов парсинга"""
     if not results:
         await message.edit_text(
@@ -169,7 +168,7 @@ async def show_parsing_results(message: Message, results: list, parsing_id: int)
     await message.edit_text(
         text,
         parse_mode="HTML",
-        reply_markup=get_results_keyboard(parsing_id)
+        reply_markup=get_results_keyboard()
     )
 
 

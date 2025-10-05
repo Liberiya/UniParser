@@ -11,7 +11,6 @@ from loguru import logger
 
 from bot.handlers import register_handlers
 from bot.middleware import register_middleware
-from database.operations import init_database
 
 
 async def start_bot():
@@ -22,7 +21,7 @@ async def start_bot():
         raise ValueError("TELEGRAM_TOKEN не найден в переменных окружения")
     
     # Инициализируем базу данных
-    await init_database()
+    # await init_database()  # Удалено
     
     # Создаем бота и диспетчер
     bot = Bot(token=token)
