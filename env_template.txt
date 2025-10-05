@@ -1,0 +1,21 @@
+# Создайте файл .env в корне проекта и скопируйте эти настройки
+
+# Telegram Bot Token (получить у @BotFather)
+TELEGRAM_TOKEN=your_bot_token_here
+
+# Настройки парсера
+RATE_LIMIT_DELAY=2
+MAX_PAGES_DEPTH=2
+JS_RENDER_TIMEOUT=30
+PARSING_TIMEOUT=120
+CONFIDENCE_THRESHOLD=0.6
+
+# База данных (SQLite по умолчанию)
+DATABASE_URL=sqlite:///data/parser_bot.db
+
+# Настройки логирования
+LOG_LEVEL=INFO
+DEVELOPER_MODE=false
+
+# Опционально: Redis для очереди задач (закомментировано)
+# REDIS_URL=redis://localhost:6379/0
